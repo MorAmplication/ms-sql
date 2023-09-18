@@ -1,0 +1,46 @@
+datasource db {
+  provider = "sqlserver"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  firstName String?
+  lastName  String?
+  username  String   @unique
+  password  String
+  roles     Json
+}
+
+model Event {
+  id          String    @id @default(uuid()) @map("event_id")
+  name        String
+  description String
+  startDate   DateTime
+  endDate     DateTime
+  location    String
+  sessions    Session[]
+  testAuto    Int?
+}
+
+model Session {
+  id      String   @id @default(uuid())
+  name    String
+  speaker String
+  time    DateTime
+  event   Event    @relation(fields: [eventId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  eventId String
+}
+
+model Emit {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  testDe    Decimal?
+}
